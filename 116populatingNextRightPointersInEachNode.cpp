@@ -19,14 +19,14 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        if (!root) return root;
+        if (root == nullptr) return root;
         
         Node* prev = root;
         Node* curr = nullptr;
 
         while (prev != nullptr) {
             curr = prev;
-            while (curr && curr->left) {
+            while (curr != nullptr && curr->left != nullptr) {
                 curr->left->next = curr->right;
                 if (curr->next != nullptr) curr->right->next = curr->next->left;
                 curr = curr->next;
