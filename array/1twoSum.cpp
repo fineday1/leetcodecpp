@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <algorithm>
 #include <cassert>
 
 using namespace std;
@@ -7,18 +8,49 @@ using namespace std;
 class Solution 
 {
     public:
-        vector<int> twoSum(vector<int>& nums, int target) 
+        // vector<int> twoSum(vector<int>& nums, int target) 
+        // {
+        //     int nums_cnt = nums.size();
+        //     int sum = nums[0];
+
+        //     for (int i = 0; i < nums_cnt; ++i)
+        //     {
+        //         for (int j = 0; j < nums_cnt; ++j)
+        //         {
+        //             if (i == j) sum = nums[i];
+        //             else sum = nums[i] + nums[j];
+        //             if (sum == target && i != j) return { i, j };
+        //         }
+        //     }
+
+        //     return {  };
+        // }
+
+        /**
+         * Faster implementation takes O(n*log(n)) instead of O(n^2).
+         * We iterate over nums and look for the remaining value using lower bound,
+         * when we find the two numbers matching target, we iterate nums to find
+         * the index of the second number (this does not raise time complexity).
+         */
+        vector<int> twoSum(vector<int>& nums, int target)
         {
             int nums_cnt = nums.size();
-            int sum = nums[0];
+            
+            vector<int> nums_sorted = nums;
+            sort(nums_sorted.begin(), nums_sorted.end());
+
+            int remainder = target - nums[0];
 
             for (int i = 0; i < nums_cnt; ++i)
             {
-                for (int j = 0; j < nums_cnt; ++j)
-                {
-                    if (i == j) sum = nums[i];
-                    else sum = nums[i] + nums[j];
-                    if (sum == target && i != j) return { i, j };
+                remainder = target - nums[i];
+                auto it = lower_bound(nums_sorted.begin(), nums_sorted.end(), remainder);
+                if (it == nums_sorted.end()) continue;
+                else {
+                    for (int j = 0; j < nums_cnt; ++j)
+                    {
+                        if (nums[j] == remainder && i != j) return { i, j };
+                    }
                 }
             }
 
