@@ -15,13 +15,21 @@
  * 
  * Thought process:
  *   Naive solution would mean using two nested loops to check every combination of two prices. This will be O(n^2).
- *   How can we make a decision based on the previous one? What if we store the minimum buy price and maximum sell
- *   price, and if we encounter a better price we update it? This guarantees finding the minimum and maximum, but not
- *   them being in the order of min_idx < max_idx. We need to also track the indices at which the extremes are.
+ * 
+ *                  [7, 1, 5, 3, 6, 4]
+ *                   |  |  |  |  |  |
+ *                   0  1  2  3  4  5
+ * 
+ *                  [1, 3, 4, 5, 6, 7]
+ *                   |  |  |  |  |  |
+ *                   1  3  5  2  4  0
  */
+
 #include <vector>
 #include <cassert>
 #include <iostream>
+#include <algorithm>
+#include <limits>
 
 using namespace std;
 
@@ -31,7 +39,7 @@ class Solution
         /**
          * Naive solution
          */
-        int maxProfit(vector<int>& prices)
+        int maxProfitNaive(vector<int>& prices)
         {
             int max_profit = 0;
 
@@ -45,6 +53,24 @@ class Solution
                 }
             }
             
+            return max_profit;
+        }
+
+        /**
+         * Optimized solution using Dynamic Programming
+         */
+        int maxProfit(vector<int>& prices)
+        {
+            int min_buy = numeric_limits<int>::max();
+            int max_profit = 0;
+
+            for (size_t i = 0; i < prices.size(); ++i)
+            {
+                if (prices[i] - min_buy > max_profit) max_profit = prices[i] - min_buy;
+                if (prices[i] < min_buy) min_buy = prices[i];
+            }
+
+            // cout << "max_profit=" << max_profit << endl;
             return max_profit;
         }
 };
