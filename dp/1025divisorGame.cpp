@@ -38,7 +38,6 @@
  *   wins, for i = 2 we know that Bob wins, for i = 3 we have a single option of choosing x = 1, in which case
  *   i becomes 2, so Bob wins, for i = 4 we can either choose x = 1, or x = 2, we choose i - x such that Alice wins.
  *
- *   In general we construct dp[i] by
  */
 
 #include <iostream>
@@ -56,40 +55,76 @@ class Solution
          * @return Returns true if Alice found a move that guarantees her victory,
          *         returns false if not.
          */
-        bool solve(int curr, bool isAliceTurn)
-        {
-            // Base case, if the remainder is one, there are no more moves,
-            // if it's Alice's turn she loses, if not Bob loses
-            if (curr == 1 && isAliceTurn)
-                return false;
-            else if (curr == 1 && !isAliceTurn)
-                return true;
+        // bool solve(int curr, bool isAliceTurn)
+        // {
+        //     // Base case, if the remainder is one, there are no more moves,
+        //     // if it's Alice's turn she loses, if not Bob loses
+        //     if (curr == 1 && isAliceTurn)
+        //         return false;
+        //     else if (curr == 1 && !isAliceTurn)
+        //         return true;
 
-            // Iterate over all possible x values that satisfy the condition
+        //     // Iterate over all possible x values that satisfy the condition
+        //     for (int i = 1; i < curr; ++i)
+        //     {
+        //         if (curr % i == 0)
+        //         {
+        //             bool res = solve(curr - i, !isAliceTurn);
+
+        //             if (res && isAliceTurn)
+        //                 return true;                // Alice found a way to guarantee a victory
+        //             else if (!res && isAliceTurn)
+        //                 continue;                   // Alice did not find a way to win, keep exploring
+        //             else if (res && !isAliceTurn)
+        //                 continue;                   // Bob did not find a way to win, keep exploring
+        //             else if (!res && !isAliceTurn)
+        //                 return false;               // Bob found a way to guarantee a victory
+        //         }
+        //     }
+
+        //     // All possible ways exhausted, return true if it's Bob's turn, else return true (Alice wins)
+        //     return !isAliceTurn;
+        // }
+
+        // bool divisorGame(int n)
+        // {
+        //     return solve(n, true);
+        // }
+
+        /**
+         * Top-down DP with memoization
+         */
+        bool solve(int curr, vector<int> &dp)
+        {
+            if (curr == 1)
+                return false;
+
+            if (dp[curr] != -1)
+                return dp[curr];
+            
             for (int i = 1; i < curr; ++i)
             {
                 if (curr % i == 0)
                 {
-                    bool res = solve(curr - i, !isAliceTurn);
+                    bool res = solve(curr - i, dp);
 
-                    if (res && isAliceTurn)
-                        return true;                // Alice found a way to guarantee a victory
-                    else if (!res && isAliceTurn)
-                        continue;                   // Alice did not find a way to win, keep exploring
-                    else if (res && !isAliceTurn)
-                        continue;                   // Bob did not find a way to win, keep exploring
-                    else if (!res && !isAliceTurn)
-                        return false;               // Bob found a way to guarantee a victory
+                    if (!res)
+                    {
+                        dp[curr] = true;
+                        return true;
+                    }
                 }
             }
 
-            // All possible ways exhausted, return true if it's Bob's turn, else return true (Alice wins)
-            return !isAliceTurn;
+            dp[curr] = false;
+            return false;
         }
 
         bool divisorGame(int n)
         {
-            return solve(n, true);
+            vector<int> dp(n + 1, -1);
+
+            return solve(n, dp);
         }
 };
 
