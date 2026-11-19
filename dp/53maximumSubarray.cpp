@@ -9,7 +9,7 @@
  *   2) Input: nums = [1]
  *      Output: 1
  *
- *   2) Input: nums = [5,4,-1,7,8]
+ *   3) Input: nums = [5,4,-1,7,8]
  *      Output: 23
  *
  * Thought Process:
